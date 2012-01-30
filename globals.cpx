@@ -27,7 +27,9 @@ int dispmode=0;
 int palstart=0;
 
 uint8_t paldata[10000000];
-int palsize;
+int palsize=0;
+
+int palentrysize=4;
 
 uint8_t data[10000000];
 int datalen;

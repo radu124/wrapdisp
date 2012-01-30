@@ -56,36 +56,65 @@ void setpel(int i, int r, int g=-1, int b=-1)
 	pixels[i*3+2]=b;
 }
 
-void setpelx(int i, int q)
+void setpelw(int i, uint32_t rgb)
 {
-	setpel(i,(q&0x07)*36,(q&0x38)/8*36,(q&0xc0)/0x40*85);
+	pixels[i*3  ]=(uint8_t)  rgb;
+	pixels[i*3+1]=(uint8_t) (rgb>>8);
+	pixels[i*3+2]=(uint8_t) (rgb>>16);
 }
 
-void updbytes()
+int getcrtwordsize()
 {
-	int i, j, k;
-	k=0;
-	memset(pixels,0,sizeof(pixels));
-	int adr=dstart;
-	while (k<1024)
+	switch (dispmode)
 	{
-		for (i=0; i<512; i++)
-		{
-			for (j=0; j<width; j++)
-			{
-				if (j+k<1024) setpelx(i*1024+j+k,data[adr]);
-				adr++;
-			}
-			if (adr>=datalen) break;
-		}
-		if (adr>=datalen) break;
-		k+=width+10;
+	case 0:
+		return 1;
+	case 1:
+	case 2:
+		return 2;
 	}
+	return 1;
+}
+
+uint32_t getpixelval(uint8_t *data)
+{
+	uint32_t val=0;
+	int mask;
+	int q=data[0];
+	switch (dispmode)
+	{
+	case 0:
+		if (palsize==0) val=((q&0x07)*36) | ((q&0x38)/8*36)*256 | ((q&0xc0)/0x40*85)*0x10000;
+		else
+		{
+			val  = paldata[q*palentrysize+palstart]*0x10000;
+			val += paldata[q*palentrysize+palstart+1]*256;
+			val += paldata[q*palentrysize+palstart+2];
+		}
+		return val;
+	case 1:
+		if (byteorder) val=data[1]+256*data[0];
+		else val=data[0]+256*data[1];
+		mask=(1<<bitwidth)-1;
+		val=(val*0x10001) & (mask<<bitsel);
+		val=val>>bitsel;
+		val=val<<(8-bitwidth);
+		val=val&0xff;
+		return val;
+	case 2:
+		if (byteorder) val=data[1]+256*data[0];
+		else val=data[0]+256*data[1];
+		val=val & 0xffff;
+		val=((val>>11)&0x1f)*8 | 256*((val>>5) &0x3f)*4 | 0x10000*((val) & 0x1f)*8;
+		break;
+	}
+	return val;
 }
 
 void updwords()
 {
 	int i, j, k;
+	int wordsize=getcrtwordsize();
 	k=0;
 	memset(pixels,0,sizeof(pixels));
 	int adr=dstart;
@@ -93,60 +122,22 @@ void updwords()
 	{
 		for (i=0; i<512; i++)
 		{
-			for (j=0; j<width/2; j++)
+			for (j=0; j<width/wordsize; j++)
 			{
-				int val;
-				if (byteorder) val=data[adr+1]+256*data[adr];
-				else val=data[adr]+256*data[adr+1];
-				int mask=(1<<bitwidth)-1;
-				val=(val*0x10001) & (mask<<bitsel);
-				val=val>>bitsel;
-				val=val<<(8-bitwidth);
-				val=val&0xff;
-				if (j+k<1024) setpel(i*1024+j+k,val);
-				adr+=2;
+				if (j+k<1024) setpelw(i*1024+j+k,getpixelval(data+adr));
+				adr+=wordsize;
 			}
 			if (adr>=datalen) break;
 		}
 		if (adr>=datalen) break;
-		k+=width/2+10;
+		k+=width/wordsize+10;
 	}
 }
 
-void updhicolor()
-{
-	int i, j, k;
-	k=0;
-	memset(pixels,0,sizeof(pixels));
-	int adr=dstart;
-	while (k<1024)
-	{
-		for (i=0; i<512; i++)
-		{
-			for (j=0; j<width/2; j++)
-			{
-				int val;
-				if (byteorder) val=data[adr+1]+256*data[adr];
-				else val=data[adr]+256*data[adr+1];
-				val=val & 0xffff;
-				if (j+k<1024) setpel(i*1024+j+k,((val>>11)&0x1f)*8,((val>>5) &0x3f)*4, ((val) & 0x1f)*8);
-				adr+=2;
-			}
-			if (adr>=datalen) break;
-		}
-		if (adr>=datalen) break;
-		k+=width/2+10;
-	}
-}
 
 void updatetexture()
 {
-	if (modified) switch (dispmode)
-	{
-		case 1: updwords(); break;
-		case 0: updbytes(); break;
-		case 2: updhicolor(); break;
-	}
+	if (modified) updwords();
 	//for (i=0; i<1024*512; i++) setpel(i,i,0,0);
 	glBindTexture(GL_TEXTURE_2D, thetex);
 	glTexImage2D(GL_TEXTURE_2D, 0, 4, 1024, 512, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
@@ -250,8 +241,10 @@ void scenehandleevent(SDL_Event &event)
 		case 'd':
 			dumpdata();
 			break;
+		case '[': if (palstart>0) palstart--; break;
+		case ']': if (palstart<palsize-3) palstart++; break;
 		}
-		MESSAGE("Width: %6d   Start: %8d   Mode: %1d   bitpos: %2d   bitwidth: %2d\n",width,dstart,dispmode,bitsel,bitwidth);
+		MESSAGE("Width: %6d   Start: %8d   Mode: %1d   bitpos: %2d   bitwidth: %2d palstart: %d\n",width,dstart,dispmode,bitsel,bitwidth,palstart);
 
 	}
 }

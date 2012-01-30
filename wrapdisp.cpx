@@ -46,11 +46,22 @@ int main( int argc, char* argv[] )
 			ifargint("-palstart",palstart);
 			assume(0,"unknown parameter: %s\n",argv[i]);
 		}
+		mainfname=argv[i];
 	}
-	assume(argc==2,"Expecting one argument (the file name)");
-	int fin=open(argv[1],O_RDONLY);
+	assume(mainfname,"Expecting one file argument");
+	int fin;
+
+	fin=open(mainfname,O_RDONLY);
 	datalen=read(fin,data,10000000);
 	close(fin);
+
+	if (palfname)
+	{
+	fin=open(palfname,O_RDONLY);
+	palsize=read(fin,paldata,10000000);
+	close(fin);
+	}
+
 	MESSAGE("Data len is: %d\n",datalen);
 	assume(!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO), "Unable to initialize SDL: %s\n");
 	findvideomodes();
