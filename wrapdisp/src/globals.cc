@@ -12,9 +12,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 *******************************************************************/
 
-interface
-
-uses includes;
+#include "globals.h"
 
 int scr_width=1024;
 int scr_height=512;
@@ -55,19 +53,11 @@ SDL_Rect **videomodesdl;
 const SDL_VideoInfo *origmode;
 vstring videomodenames;
 
-struct tConfigurable
-{
-	int idx;
-	string name;
-};
-
-struct tVideoMode:public tConfigurable
-{
-	int height,width,bpp;
-};
-
 vector<tConfigurable*> videomodes;
 tVideoMode *fsvideomode;
 
-implementation
+int width=32;
+
+int gameover;
+volatile int uu;
 

@@ -11,17 +11,9 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 *******************************************************************/
-interface
-
-uses includes;
-
-void scenehandleevent(SDL_Event &event);
-void renderscene();
-void updatetexture();
-
-void genbig();
-
-implementation
+#include "scene.h"
+#include "globals.h"
+#include "message.h"
 
 void genbig()
 {
@@ -43,8 +35,6 @@ void renderscene()
 	glTexCoord2f(1.0 , 1.0); glVertex3f(scr_width, scr_height, 0);
 	glEnd();
 }
-
-int width=32;
 
 void setpel(int i, int r, int g=-1, int b=-1)
 {
@@ -248,3 +238,6 @@ void scenehandleevent(SDL_Event &event)
 
 	}
 }
+
+
+

@@ -10,21 +10,16 @@ This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
-*******************************************************************/  
-  
-interface
+*******************************************************************/
 
-uses includes;
+#include "includes.h"
 
-// defined in configuration
-int tsimatch(char *&s, const char *v);
-
-template <typename T>
-T* dorealloc(T* &adr,int len)
+void mcolor::weight(mcolor a, mcolor b, GLfloat wg)
 {
-	T* res=(T*) realloc(adr,len*sizeof(T));
-	if (!res) exit(1);
-	adr=res;
+	Red   = a.Red   *(1-wg) + b.Red   * wg;
+	Green = a.Green *(1-wg) + b.Green * wg;
+	Blue  = a.Blue  *(1-wg) + b.Blue  * wg;
+	Alpha = a.Alpha *(1-wg) + b.Alpha * wg;
 }
 
 void mcolor::set()
@@ -32,8 +27,4 @@ void mcolor::set()
 	glColor4f(Red,Green,Blue,Alpha);
 }
 
-implementation
-		
-
-//	return SDL_GetTicks()*0.001;
 

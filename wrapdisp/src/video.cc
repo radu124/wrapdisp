@@ -12,18 +12,14 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 *******************************************************************/
 
-interface
+#include "video.h"
 
-void videoToFullscreen();
-void videoExitFullscreen();
-void doResize(int w, int h);
-void findvideomodes();
-void checkFullscreenRes();
-void initviewport();
+#include "includes.h"
+#include "globals.h"
+#include "font.h"
+#include "message.h"
+#include "verbosity.h"
 
-implementation
-
-uses includes,globals,font;
 int windowres_x, windowres_y;
 
 tVideoMode origres;
@@ -135,3 +131,6 @@ void checkFullscreenRes()
 	}
 	video_dofullscreen=false;
 }
+
+
+

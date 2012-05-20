@@ -1,18 +1,6 @@
-/*******************************************************************
-(C) 2011 by Radu Stefan
-radu124@gmail.com
+#ifndef __HDR_verbosity_h
+#define __HDR_verbosity_h
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; version 2 of the License.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-*******************************************************************/
-
-interface
 
 const int LEV_QUIET       = 0;
 const int LEV_WARN        = 1;
@@ -44,4 +32,5 @@ const int MSG_PLAYERSTATE = LEV_DBG    ;
 #define DBG(tgt,...)     __COND_DBG_OUT(MSG_##tgt >= MSG_BIAS+LEV_DBG, __VA_ARGS__)
 #define VDBG(tgt,...)    __COND_DBG_OUT(MSG_##tgt >= MSG_BIAS+LEV_VDBG, __VA_ARGS__)
 
-implementation
+
+#endif

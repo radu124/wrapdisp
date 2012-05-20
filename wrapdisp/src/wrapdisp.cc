@@ -12,7 +12,15 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 *******************************************************************/
 
-uses includes, utils, font, globals, verbosity, video, scene;
+#include "includes.h"
+#include "utils.h"
+#include "font.h"
+#include "globals.h"
+#include "verbosity.h"
+#include "video.h"
+#include "scene.h"
+#include "message.h"
+#include "verbosity.h"
 
 const char *mainfname=NULL;
 const char *palfname=NULL;
@@ -127,4 +135,7 @@ int main( int argc, char* argv[] )
 	SDL_Quit();
 	return 0;
 }
+
+
+
 

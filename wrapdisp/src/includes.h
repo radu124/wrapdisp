@@ -1,18 +1,6 @@
-/*******************************************************************
-(C) 2011 by Radu Stefan
-radu124@gmail.com
+#ifndef __HDR_includes_h
+#define __HDR_includes_h
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; version 2 of the License.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-*******************************************************************/
-
-interface
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -50,9 +38,6 @@ typedef vector<vstring> vvstring;
 typedef vector<int> vint;
 typedef vector<vint> vvint;
 
-int gameover;
-volatile int uu;
-
 #ifdef _WINDOWS
 #include <windows.h>
 #include <shlobj.h>
@@ -60,19 +45,12 @@ volatile int uu;
 
 struct mcolor{
 	GLfloat Red,Green,Blue,Alpha;
-	void set(); // in utils.cpx
+	void set();
 	void weight(mcolor a, mcolor b, GLfloat wg);
 	mcolor():Red(0),Green(0),Blue(0),Alpha(0) {;}
 	mcolor(GLfloat r, GLfloat g, GLfloat b):Red(r),Green(g),Blue(b),Alpha(0) {;}
 	mcolor(GLfloat r, GLfloat g, GLfloat b, GLfloat a):Red(r),Green(g),Blue(b),Alpha(a) {;}
 };
 
-implementation
 
-void mcolor::weight(mcolor a, mcolor b, GLfloat wg)
-{
-	Red   = a.Red   *(1-wg) + b.Red   * wg;
-	Green = a.Green *(1-wg) + b.Green * wg;
-	Blue  = a.Blue  *(1-wg) + b.Blue  * wg;
-	Alpha = a.Alpha *(1-wg) + b.Alpha * wg;
-}
+#endif
