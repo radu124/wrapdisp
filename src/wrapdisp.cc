@@ -78,7 +78,7 @@ int main( int argc, char* argv[] )
 	init_fonts();
 	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
-	SDL_WM_SetCaption("SplexHD - Supaplex remake", "SDL");
+	SDL_WM_SetCaption("Wrap-disp reverse engineering tool", "SDL");
 	/* create window */
 	scrsurface = SDL_SetVideoMode(
 		scr_width,scr_height,
